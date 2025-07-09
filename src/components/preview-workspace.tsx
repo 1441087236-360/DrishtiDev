@@ -658,6 +658,8 @@ export function PreviewWorkspace({
         );
     };
     
+    // This key forces the ResizablePanelGroup to remount when the order of previews changes, fixing the resize handle bug.
+    const panelGroupKey = previews.map(p => p.id).join('-');
     let layoutContent;
 
     switch (layout) {
@@ -673,19 +675,20 @@ export function PreviewWorkspace({
         case 'focus-left':
             if (count < 2) {
                  layoutContent = (
-                    <ResizablePanelGroup direction="horizontal" onLayout={(sizes) => { document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`}}>
+                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
                         {previews.map(p => <ResizablePanel key={p.id}>{renderSortableItem(p)}</ResizablePanel>)}
                     </ResizablePanelGroup>
                  )
             } else {
+                const innerKey = previews.slice(1).map(p => p.id).join('-');
                 layoutContent = (
-                    <ResizablePanelGroup direction="horizontal" onLayout={(sizes) => { document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`}}>
+                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
                         <ResizablePanel defaultSize={66}>
                             {renderSortableItem(previews[0])}
                         </ResizablePanel>
                         <ResizableHandle withHandle onDragging={setIsResizing} />
                         <ResizablePanel defaultSize={34}>
-                             <ResizablePanelGroup direction="vertical" onLayout={(sizes) => { document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`}}>
+                             <ResizablePanelGroup key={innerKey} direction="vertical">
                                 {previews.slice(1).map((p, index) => (
                                     <React.Fragment key={p.id}>
                                         <ResizablePanel>
@@ -704,19 +707,20 @@ export function PreviewWorkspace({
         case 'focus-top':
             if (count < 2) {
                 layoutContent = (
-                    <ResizablePanelGroup direction="horizontal" onLayout={(sizes) => { document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`}}>
+                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
                         {previews.map(p => <ResizablePanel key={p.id}>{renderSortableItem(p)}</ResizablePanel>)}
                     </ResizablePanelGroup>
                 )
             } else {
+                 const innerKey = previews.slice(1).map(p => p.id).join('-');
                  layoutContent = (
-                    <ResizablePanelGroup direction="vertical" onLayout={(sizes) => { document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`}}>
+                    <ResizablePanelGroup key={panelGroupKey} direction="vertical">
                         <ResizablePanel defaultSize={66}>
                             {renderSortableItem(previews[0])}
                         </ResizablePanel>
                         <ResizableHandle withHandle onDragging={setIsResizing} />
                         <ResizablePanel defaultSize={34}>
-                             <ResizablePanelGroup direction="horizontal" onLayout={(sizes) => { document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`}}>
+                             <ResizablePanelGroup key={innerKey} direction="horizontal">
                                 {previews.slice(1).map((p, index) => (
                                     <React.Fragment key={p.id}>
                                         <ResizablePanel>
@@ -735,7 +739,7 @@ export function PreviewWorkspace({
         case 'dynamic':
         default:
             layoutContent = (
-                <ResizablePanelGroup direction="horizontal" onLayout={(sizes) => { document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`}}>
+                <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
                     {previews.map((p, index) => (
                         <React.Fragment key={p.id}>
                             <ResizablePanel>
@@ -1284,7 +1288,7 @@ export function PreviewWorkspace({
                 </DragOverlay>
             </main>
             <footer className="p-2 text-center text-xs text-muted-foreground border-t">
-                © {new Date().getFullYear()} 1441087236-360. All Rights Reserved.
+                © {new Date().getFullYear()} DrishtiDev. All Rights Reserved.
             </footer>
         </div>
     </DndContext>
