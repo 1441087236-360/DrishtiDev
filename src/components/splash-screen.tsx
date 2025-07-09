@@ -47,12 +47,17 @@ export function SplashScreen() {
   return (
     <div
       className={cn(
-        'fixed inset-0 z-[200] flex items-center justify-center bg-background/95 backdrop-blur-sm transition-opacity duration-500',
+        'fixed inset-0 z-[200] flex items-center justify-center bg-background/80 backdrop-blur-md transition-opacity duration-500',
         isFading ? 'opacity-0' : 'opacity-100'
       )}
     >
-      <div className="animate-pulse">
-        <Logo className="w-48 h-auto" />
+      <div
+        className={cn(
+          'transition-all duration-500 ease-in-out',
+          isFading ? 'scale-75 opacity-0' : 'scale-100 opacity-100 animate-pulse'
+        )}
+      >
+        <Logo className="w-64 h-auto" />
       </div>
     </div>
   );
