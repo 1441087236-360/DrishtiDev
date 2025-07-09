@@ -9,7 +9,7 @@ export function SplashScreen() {
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    const SPLASH_DURATION = 2000; // 2 seconds
+    const SPLASH_DURATION = 1500; // 1.5 seconds
     const FADE_OUT_DURATION = 500; // 0.5 seconds
     const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour
 
@@ -51,12 +51,7 @@ export function SplashScreen() {
         isFading ? 'opacity-0' : 'opacity-100'
       )}
     >
-      <div
-        className={cn(
-          'transition-all duration-500 ease-in-out',
-          isFading ? 'scale-75 opacity-0' : 'scale-100 opacity-100 animate-pulse'
-        )}
-      >
+      <div className={cn(!isFading && 'animate-pulse')}>
         <Logo className="w-64 h-auto" />
       </div>
     </div>
