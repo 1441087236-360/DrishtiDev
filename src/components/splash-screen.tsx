@@ -52,7 +52,7 @@ export function SplashScreen() {
       )}
     >
       <div className={cn(!isFading && 'animate-pulse')}>
-        <Logo className="w-64 h-auto" />
+        <Logo className="w-96 h-auto" />
       </div>
     </div>
   );
