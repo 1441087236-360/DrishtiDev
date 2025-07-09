@@ -675,14 +675,14 @@ export function PreviewWorkspace({
         case 'focus-left':
             if (count < 2) {
                  layoutContent = (
-                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
+                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}}>
                         {previews.map(p => <ResizablePanel key={p.id}>{renderSortableItem(p)}</ResizablePanel>)}
                     </ResizablePanelGroup>
                  )
             } else {
                 const innerKey = previews.slice(1).map(p => p.id).join('-');
                 layoutContent = (
-                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
+                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}}>
                         <ResizablePanel defaultSize={66}>
                             {renderSortableItem(previews[0])}
                         </ResizablePanel>
@@ -707,14 +707,14 @@ export function PreviewWorkspace({
         case 'focus-top':
             if (count < 2) {
                 layoutContent = (
-                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
+                    <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}}>
                         {previews.map(p => <ResizablePanel key={p.id}>{renderSortableItem(p)}</ResizablePanel>)}
                     </ResizablePanelGroup>
                 )
             } else {
                  const innerKey = previews.slice(1).map(p => p.id).join('-');
                  layoutContent = (
-                    <ResizablePanelGroup key={panelGroupKey} direction="vertical">
+                    <ResizablePanelGroup key={panelGroupKey} direction="vertical" onLayout={() => {}}>
                         <ResizablePanel defaultSize={66}>
                             {renderSortableItem(previews[0])}
                         </ResizablePanel>
@@ -739,7 +739,7 @@ export function PreviewWorkspace({
         case 'dynamic':
         default:
             layoutContent = (
-                <ResizablePanelGroup key={panelGroupKey} direction="horizontal">
+                <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}}>
                     {previews.map((p, index) => (
                         <React.Fragment key={p.id}>
                             <ResizablePanel>
@@ -1041,9 +1041,9 @@ export function PreviewWorkspace({
             
             {/* HEADER */}
             <header className="flex items-center justify-between p-2 border-b shrink-0 gap-4">
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-4 shrink-0">
                     <Logo />
-                    <h1 className="text-xl font-semibold">DrishtiDev</h1>
+                    <h1 className="text-xl font-bold tracking-wider">DrishtiDev</h1>
                 </div>
                 <form className="flex-1 max-w-xl" onSubmit={handleUrlSubmit}>
                     <div className="relative">
