@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { ref, set } from 'firebase/database';
@@ -27,6 +27,28 @@ export default function HomePage() {
   const [theme, setTheme] = useState('default');
   const [lastInteractedUrl, setLastInteractedUrl] = useState<string | null>(null);
   const [maximizedId, setMaximizedId] = useState<string | null>(null);
+
+  // Load saved theme and background from localStorage on initial render
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('drishtidev-theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+    const savedBackground = localStorage.getItem('drishtidev-background');
+    if (savedBackground) {
+      setBackground(savedBackground);
+    }
+  }, []);
+
+  // Save theme to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('drishtidev-theme', theme);
+  }, [theme]);
+
+  // Save background to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('drishtidev-background', background);
+  }, [background]);
 
   const handleSetUrl = (newUrl: string) => {
     setUrl(newUrl);
