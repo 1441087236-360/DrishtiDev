@@ -739,7 +739,7 @@ export function PreviewWorkspace({
         case 'dynamic':
         default:
             layoutContent = (
-                <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}} onLayoutChange={null}>
+                <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}}>
                     {previews.map((p, index) => (
                         <React.Fragment key={p.id}>
                             <ResizablePanel>
