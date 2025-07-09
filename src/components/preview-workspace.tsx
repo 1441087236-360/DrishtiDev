@@ -739,7 +739,7 @@ export function PreviewWorkspace({
         case 'dynamic':
         default:
             layoutContent = (
-                <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}}>
+                <ResizablePanelGroup key={panelGroupKey} direction="horizontal" onLayout={() => {}} onLayoutChange={null}>
                     {previews.map((p, index) => (
                         <React.Fragment key={p.id}>
                             <ResizablePanel>
@@ -1041,9 +1041,8 @@ export function PreviewWorkspace({
             
             {/* HEADER */}
             <header className="flex items-center justify-between p-2 border-b shrink-0 gap-4">
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center shrink-0">
                     <Logo />
-                    <h1 className="text-xl font-bold tracking-wider">DrishtiDev</h1>
                 </div>
                 <form className="flex-1 max-w-xl" onSubmit={handleUrlSubmit}>
                     <div className="relative">
