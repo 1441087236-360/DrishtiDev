@@ -672,36 +672,28 @@ export function PreviewWorkspace({
       );
     }
 
-    const renderPreviewItem = (p: any, isCarouselItem = false) => (
-      <div className={cn("w-full h-full", isCarouselItem ? "flex items-center justify-center" : "p-2")}>
-        <div className={cn(isCarouselItem && "w-full h-full p-2")}>
-            <PreviewPanel
-                key={p.id}
-                preview={p}
-                onRemove={handleRemove}
-                onToggleDevTools={handleToggleDevTools}
-                onRefresh={handleRefresh}
-                onAudit={handleAudit}
-                onMaximize={setMaximizedId}
-                onMinimize={() => setMaximizedId(null)}
-                isMaximized={p.id === maximizedId}
-                isResizing={isResizing}
-                isWallpaperActive={isWallpaperActive}
-                handleProps={null}
-                isDragging={false}
-                isOverlay={false}
-            />
-        </div>
-      </div>
-    );
-  
     if (isMobile) {
       return (
         <Carousel setApi={setCarouselApi} className="w-full h-full">
           <CarouselContent>
             {previews.map((p) => (
-              <CarouselItem key={p.id}>
-                {renderPreviewItem(p, true)}
+              <CarouselItem key={p.id} className="flex items-center justify-center p-2">
+                <PreviewPanel
+                    key={p.id}
+                    preview={p}
+                    onRemove={handleRemove}
+                    onToggleDevTools={handleToggleDevTools}
+                    onRefresh={handleRefresh}
+                    onAudit={handleAudit}
+                    onMaximize={setMaximizedId}
+                    onMinimize={() => setMaximizedId(null)}
+                    isMaximized={p.id === maximizedId}
+                    isResizing={isResizing}
+                    isWallpaperActive={isWallpaperActive}
+                    handleProps={null}
+                    isDragging={false}
+                    isOverlay={false}
+                />
               </CarouselItem>
             ))}
           </CarouselContent>
