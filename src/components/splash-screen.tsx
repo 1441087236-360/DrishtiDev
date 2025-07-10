@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -16,6 +17,7 @@ export function SplashScreen() {
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
+    // This code now runs only on the client
     const savedTheme = localStorage.getItem('drishtidev-theme') || 'default';
     const root = document.documentElement;
     const themeClasses = themes.map(t => t.value).filter(v => v !== 'default');
