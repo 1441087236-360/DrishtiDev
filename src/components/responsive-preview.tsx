@@ -1,3 +1,4 @@
+
 "use client";
 
 import { cn } from '@/lib/utils';
@@ -89,7 +90,6 @@ export function ResponsivePreview({ id, url, width, height, title, isDevToolsOpe
             currentFrame.iframeRadius
           )}
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          allowtransparency="true"
         />
       </div>
     </div>
