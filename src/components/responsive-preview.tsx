@@ -38,9 +38,13 @@ export function ResponsivePreview({ id, url, width, height, title, isDevToolsOpe
       if (entries[0]) {
         const { width: containerWidth, height: containerHeight } = entries[0].contentRect;
         
+        // Subtract a small buffer for padding to ensure the preview fits
+        const safeContainerWidth = containerWidth - 16;
+        const safeContainerHeight = containerHeight - 16;
+        
         if (frameWidth > 0 && frameHeight > 0) {
-          const scaleX = containerWidth / frameWidth;
-          const scaleY = containerHeight / frameHeight;
+          const scaleX = safeContainerWidth / frameWidth;
+          const scaleY = safeContainerHeight / frameHeight;
           const newScale = Math.min(scaleX, scaleY); 
           setScale(newScale > 0 ? newScale : 0);
         }
@@ -62,7 +66,7 @@ export function ResponsivePreview({ id, url, width, height, title, isDevToolsOpe
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-full flex items-center justify-center overflow-hidden"
+      className="w-full h-full flex items-center justify-center overflow-hidden p-2"
     >
       <div 
         className={cn(
