@@ -96,7 +96,7 @@ interface PreviewWorkspaceProps {
   setMaximizedId: (id: string | null) => void;
 }
 
-function PreviewPanel({ preview, onRemove, onToggleDevTools, onRefresh, onAudit, isMaximized, onMaximize, onMinimize, handleProps, isDragging, isOverlay, isResizing, isWallpaperActive }: { preview: any; onRemove: (id: string) => void; onToggleDevTools: (id: string) => void; onRefresh: (id: string) => void; onAudit: (url: string) => void; isMaximized: boolean; onMaximize: (id: string) => void; onMinimize: () => void; handleProps: any; isDragging: boolean; isOverlay: boolean; isResizing: boolean; isWallpaperActive: boolean; }) {
+function PreviewPanel({ preview, onRemove, onToggleDevTools, onRefresh, onAudit, isMaximized, onMaximize, onMinimize, handleProps, isDragging, isOverlay, isResizing, isWallpaperActive, isMobile = false }: { preview: any; onRemove: (id: string) => void; onToggleDevTools: (id: string) => void; onRefresh: (id: string) => void; onAudit: (url: string) => void; isMaximized: boolean; onMaximize: (id: string) => void; onMinimize: () => void; handleProps: any; isDragging: boolean; isOverlay: boolean; isResizing: boolean; isWallpaperActive: boolean; isMobile?: boolean; }) {
 
   const deviceType = preview.width < 768 ? 'mobile' : preview.width < 1024 ? 'tablet' : 'desktop';
 
@@ -107,7 +107,7 @@ function PreviewPanel({ preview, onRemove, onToggleDevTools, onRefresh, onAudit,
   const showDragPlaceholder = isDragging || isOverlay;
   
   return (
-    <div className={cn("h-full w-full", isOverlay && "p-2")}>
+    <div className={cn("h-full w-full", isOverlay && "p-2", isMobile && "p-2")}>
       <div className={cn(
         "flex flex-col h-full rounded-lg overflow-hidden shadow-lg transition-all duration-300",
         isWallpaperActive ? 'bg-black/20 backdrop-blur-lg border border-white/10' : 'bg-background border border-border',
@@ -677,7 +677,7 @@ export function PreviewWorkspace({
         <Carousel setApi={setCarouselApi} className="w-full h-full">
           <CarouselContent className="h-full">
             {previews.map((p) => (
-              <CarouselItem key={p.id} className="flex items-center justify-center p-2">
+              <CarouselItem key={p.id} className="flex items-center justify-center h-full">
                 <PreviewPanel
                     key={p.id}
                     preview={p}
@@ -693,6 +693,7 @@ export function PreviewWorkspace({
                     handleProps={null}
                     isDragging={false}
                     isOverlay={false}
+                    isMobile={true}
                 />
               </CarouselItem>
             ))}
@@ -1468,5 +1469,3 @@ export function PreviewWorkspace({
     </DndContext>
   );
 }
-
-    
