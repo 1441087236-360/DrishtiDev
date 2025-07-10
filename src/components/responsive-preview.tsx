@@ -50,7 +50,9 @@ export function ResponsivePreview({ id, url, width, height, title, isDevToolsOpe
     observer.observe(container);
 
     return () => {
-      observer.disconnect();
+      if (container) {
+        observer.unobserve(container);
+      }
     };
   }, [frameWidth, frameHeight, isMobile]);
   
