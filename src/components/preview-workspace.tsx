@@ -678,7 +678,7 @@ export function PreviewWorkspace({
         <Carousel setApi={setCarouselApi} className="w-full h-full">
           <CarouselContent className="h-full">
             {previews.map((p) => (
-              <CarouselItem key={p.id} className="flex items-center justify-center h-full">
+              <CarouselItem key={p.id} className="w-full h-full">
                 <PreviewPanel
                     key={p.id}
                     preview={p}
@@ -1459,7 +1459,7 @@ export function PreviewWorkspace({
                     ) : null}
                 </DragOverlay>
             </main>
-            <footer className="p-2 text-center text-xs text-muted-foreground border-t">
+            <footer className="p-2 text-center text-xs text-muted-foreground border-t shrink-0">
                 {isMobile && previews.length > 0 ? (
                   <div className="py-2 text-center text-sm text-muted-foreground">
                     Slide {currentSlide + 1} of {previews.length}
@@ -1470,3 +1470,5 @@ export function PreviewWorkspace({
     </DndContext>
   );
 }
+
+    
