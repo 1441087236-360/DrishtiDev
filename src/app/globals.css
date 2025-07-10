@@ -7,18 +7,23 @@
   :root {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
+    
+    --gradient-start: 320 90% 60%; /* Vibrant Pink */
+    --gradient-middle: 280 85% 70%; /* Violet */
+    --gradient-end: 265 90% 68%;   /* Lavender */
+
     --card: 240 10% 10%;
     --card-foreground: 0 0% 95%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 320 90% 60%; /* Vibrant Pink */
-    --primary-foreground: 320 90% 10%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 5% 15%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 5% 15%;
     --muted-foreground: 240 5% 65%;
     --accent: 265 90% 68%; /* Lavender */
-    --accent-foreground: 265 90% 10%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 72.2% 50.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5% 20%;
@@ -39,13 +44,13 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 320 90% 60%; /* Vibrant Pink */
-    --primary-foreground: 320 90% 10%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 5% 15%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 5% 15%;
     --muted-foreground: 240 5% 65%;
     --accent: 265 90% 68%; /* Lavender */
-    --accent-foreground: 265 90% 10%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5% 20%;
@@ -132,4 +137,10 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer components {
+    .bg-primary-gradient {
+        background-image: linear-gradient(to right, hsl(var(--gradient-start)), hsl(var(--gradient-middle)), hsl(var(--gradient-end)));
+    }
 }
