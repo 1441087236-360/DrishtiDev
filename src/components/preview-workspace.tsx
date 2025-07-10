@@ -353,10 +353,10 @@ export function PreviewWorkspace({
       return
     }
  
-    setCurrentSlide(carouselApi.selectedScrollSnap())
+    setCurrentSlide(carouselApi.selectedScrollSnap() + 1)
  
     carouselApi.on("select", () => {
-      setCurrentSlide(carouselApi.selectedScrollSnap())
+      setCurrentSlide(carouselApi.selectedScrollSnap() + 1)
     })
   }, [carouselApi])
 
@@ -679,25 +679,23 @@ export function PreviewWorkspace({
           <CarouselContent className="h-full">
             {previews.map((p) => (
               <CarouselItem key={p.id} className="h-full">
-                <div className="w-full h-full p-2">
-                    <PreviewPanel
-                        key={p.id}
-                        preview={p}
-                        onRemove={handleRemove}
-                        onToggleDevTools={handleToggleDevTools}
-                        onRefresh={handleRefresh}
-                        onAudit={handleAudit}
-                        onMaximize={setMaximizedId}
-                        onMinimize={() => setMaximizedId(null)}
-                        isMaximized={p.id === maximizedId}
-                        isResizing={isResizing}
-                        isWallpaperActive={isWallpaperActive}
-                        handleProps={null}
-                        isDragging={false}
-                        isOverlay={false}
-                        isMobile={true}
-                    />
-                </div>
+                <PreviewPanel
+                    key={p.id}
+                    preview={p}
+                    onRemove={handleRemove}
+                    onToggleDevTools={handleToggleDevTools}
+                    onRefresh={handleRefresh}
+                    onAudit={handleAudit}
+                    onMaximize={setMaximizedId}
+                    onMinimize={() => setMaximizedId(null)}
+                    isMaximized={p.id === maximizedId}
+                    isResizing={isResizing}
+                    isWallpaperActive={isWallpaperActive}
+                    handleProps={null}
+                    isDragging={false}
+                    isOverlay={false}
+                    isMobile={true}
+                />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -1153,8 +1151,8 @@ export function PreviewWorkspace({
                 </DialogHeader>
                  <Tabs defaultValue="generate" onValueChange={() => { setGenerateResponse(null); setRefactorResponse(null); setError(null); }} className="flex flex-col flex-grow overflow-hidden">
                     <TabsList className="grid w-full grid-cols-2 shrink-0">
-                        <TabsTrigger value="generate"><Sparkles className="mr-2"/>Generate</TabsTrigger>
-                        <TabsTrigger value="refactor"><Sparkles className="mr-2"/>Refactor</TabsTrigger>
+                        <TabsTrigger value="generate" className="bg-primary-gradient"><Sparkles className="mr-2"/>Generate</TabsTrigger>
+                        <TabsTrigger value="refactor" className="bg-primary-gradient"><Sparkles className="mr-2"/>Refactor</TabsTrigger>
                     </TabsList>
                     <TabsContent value="generate" className="flex flex-col flex-grow gap-4 pt-4 overflow-y-auto">
                         <Label htmlFor="generate-prompt">Describe the component you want to create:</Label>
@@ -1202,7 +1200,7 @@ export function PreviewWorkspace({
                                                 margin: 0,
                                                 border: 'none',
                                                 padding: '1.5rem',
-                                                backgroundColor: '#272822',
+                                                backgroundColor: '#1A1A1A',
                                                 borderBottomLeftRadius: '0.5rem',
                                                 borderBottomRightRadius: '0.5rem',
                                                 maxHeight: '40vh',
@@ -1223,14 +1221,14 @@ export function PreviewWorkspace({
                             )}
                         </div>
                     </TabsContent>
-                    <TabsContent value="refactor" className="flex flex-col flex-grow gap-4 pt-4 overflow-y-auto">
-                        <div className="grid grid-rows-2 gap-4 flex-grow overflow-hidden">
-                            <div className="flex flex-col gap-2 overflow-y-auto -mr-6 pr-6">
+                    <TabsContent value="refactor" className="flex flex-col flex-grow gap-4 pt-4 overflow-hidden">
+                        <div className="flex-1 flex flex-col gap-4 min-h-0">
+                            <div className="flex-1 flex flex-col gap-2 min-h-0">
                                 <Label htmlFor="refactor-code">Paste the code you want to refactor:</Label>
                                 <Textarea
                                     id="refactor-code"
                                     placeholder="Paste your component code here."
-                                    className="flex-grow text-base resize-none font-mono"
+                                    className="flex-1 text-base resize-none font-mono"
                                     value={refactorCodeInput}
                                     onChange={(e) => setRefactorCodeInput(e.target.value)}
                                 />
@@ -1239,13 +1237,13 @@ export function PreviewWorkspace({
                                     id="refactor-instructions"
                                     placeholder="e.g., 'Convert to use shadcn/ui components', 'make the primary button blue', or 'Improve readability'."
                                     className="text-base resize-none"
-                                    rows={5}
+                                    rows={3}
                                     value={refactorInstructions}
                                     onChange={(e) => setRefactorInstructions(e.target.value)}
                                 />
                             </div>
-                            <div className="flex flex-col gap-2 overflow-y-auto -mr-6 pr-6">
-                                {isPending && (
+                            <div className="flex-1 flex flex-col gap-2 min-h-0 overflow-y-auto">
+                                {isPending && !refactorResponse && (
                                 <div className="flex flex-col items-center justify-center h-full gap-4 text-muted-foreground">
                                     <Loader2 className="w-12 h-12 animate-spin text-primary" />
                                     <p className="text-lg">AI is thinking...</p>
@@ -1277,7 +1275,7 @@ export function PreviewWorkspace({
                                             margin: 0,
                                             border: 'none',
                                             padding: '1.5rem',
-                                            backgroundColor: '#272822',
+                                            backgroundColor: '#1A1A1A',
                                             borderBottomLeftRadius: '0.5rem',
                                             borderBottomRightRadius: '0.5rem',
                                             maxHeight: '40vh',
@@ -1298,7 +1296,7 @@ export function PreviewWorkspace({
                                 )}
                             </div>
                         </div>
-                        <Button onClick={handleRefactor} disabled={isPending} className="w-full shrink-0">
+                        <Button onClick={handleRefactor} disabled={isPending} className="w-full shrink-0 mt-4">
                             {isPending ? <Loader2 className="animate-spin" /> : <Sparkles className="mr-2" />}
                             Refactor
                         </Button>
@@ -1464,7 +1462,7 @@ export function PreviewWorkspace({
             <footer className="p-2 text-center text-xs text-muted-foreground border-t shrink-0">
                 {isMobile && previews.length > 0 ? (
                   <div className="py-2 text-center text-sm text-muted-foreground">
-                    Slide {currentSlide + 1} of {previews.length}
+                    Slide {currentSlide} of {previews.length}
                   </div>
                 ) : `© ${new Date().getFullYear()} DrishtiDev. All Rights Reserved.`}
             </footer>
