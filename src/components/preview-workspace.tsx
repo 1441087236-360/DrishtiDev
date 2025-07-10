@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Code, Loader2, ClipboardCopy, Check, Smartphone, Tablet, Monitor, Maximize2, Minimize2, X, Plus, Laptop, Paintbrush, GripVertical, Palette, ExternalLink, Share2, Wrench, RefreshCw, Beaker, Ruler, Sparkles, LayoutGrid, Columns, PanelLeft, PanelTop } from 'lucide-react';
+import { Code, Loader2, ClipboardCopy, Check, Smartphone, Tablet, Monitor, Maximize2, Minimize2, X, Plus, Laptop, Paintbrush, GripVertical, Palette, ExternalLink, Share2, Wrench, RefreshCw, Beaker, Ruler, Sparkles, LayoutGrid, Columns, PanelLeft, PanelTop, Menu } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { ResponsivePreview } from '@/components/responsive-preview';
@@ -23,6 +23,8 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuGroup
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Separator } from "@/components/ui/separator";
@@ -41,6 +43,8 @@ import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, close
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { Logo } from '@/components/logo';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+
 
 const predefinedDevices = [
     { name: 'Custom', width: 0, height: 0 },
@@ -295,6 +299,9 @@ export function PreviewWorkspace({
   const [rulersVisible, setRulersVisible] = useState(false);
   const [layout, setLayout] = useState('dynamic');
   const [isResizing, setIsResizing] = useState(false);
+  
+  const isMobile = useIsMobile();
+
 
   useEffect(() => {
     setHasMounted(true);
@@ -612,6 +619,16 @@ export function PreviewWorkspace({
     }
   };
 
+  const openAiAssistant = () => {
+    setGenerateResponse(null);
+    setRefactorResponse(null);
+    setError(null);
+    setPrompt('');
+    setRefactorCodeInput('');
+    setRefactorInstructions('');
+    setIsGeneratorOpen(true)
+  }
+
   const selectedWallpaperStyle = wallpapers.find(w => w.value === background)?.style || {};
   const isWallpaperActive = background !== 'none';
   const activePreviewData = activeId ? previews.find(p => p.id === activeId) : null;
@@ -761,6 +778,282 @@ export function PreviewWorkspace({
         </SortableContext>
     );
   };
+
+  const DesktopControls = () => (
+    <div className="flex items-center shrink-0 gap-2">
+      <TooltipProvider delayDuration={100}>
+      <DropdownMenu>
+          <Tooltip>
+          <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon">
+                      <LayoutGrid />
+                      <span className="sr-only">Change Layout</span>
+                  </Button>
+              </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+              <p>Change Layout</p>
+          </TooltipContent>
+          </Tooltip>
+          <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Panel Layout</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup value={layout} onValueChange={setLayout}>
+                  {layouts.map((l) => (
+                      <DropdownMenuRadioItem key={l.value} value={l.value}>
+                          <l.icon className="w-4 h-4 mr-2" />
+                          <span>{l.label}</span>
+                      </DropdownMenuRadioItem>
+                  ))}
+              </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DropdownMenu>
+          <Tooltip>
+          <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                  <Palette />
+                  <span className="sr-only">Theme</span>
+              </Button>
+              </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+              <p>Theme</p>
+          </TooltipContent>
+          </Tooltip>
+          <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Select a Theme</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+                  {themes.map((t) => (
+                      <DropdownMenuRadioItem key={t.value} value={t.value}>
+                          {t.name}
+                      </DropdownMenuRadioItem>
+                  ))}
+              </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DropdownMenu>
+          <Tooltip>
+          <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                  <Paintbrush />
+                  <span className="sr-only">Wallpaper</span>
+              </Button>
+              </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+              <p>Wallpaper</p>
+          </TooltipContent>
+          </Tooltip>
+          <DropdownMenuContent className="w-56">
+          <DropdownMenuLabel>Select a background</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup value={background} onValueChange={setBackground}>
+              {wallpapers.map(w => (
+              <DropdownMenuRadioItem key={w.value} value={w.value}>{w.name}</DropdownMenuRadioItem>
+              ))}
+          </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Separator orientation="vertical" className="h-6 mx-1" />
+      
+      <Tooltip>
+          <TooltipTrigger asChild>
+              <Button variant={rulersVisible ? 'secondary' : 'outline'} size="icon" onClick={() => setRulersVisible(!rulersVisible)}>
+                  <Ruler />
+                  <span className="sr-only">Toggle Rulers</span>
+              </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+              <p>Toggle Rulers</p>
+          </TooltipContent>
+      </Tooltip>
+      
+      <Tooltip>
+          <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={handleSyncPreviews} disabled={!lastInteractedUrl}>
+                  <RefreshCw />
+                  <span className="sr-only">Sync Previews</span>
+              </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+              <p>Sync Previews</p>
+          </TooltipContent>
+      </Tooltip>
+
+      <Tooltip>
+          <TooltipTrigger asChild>
+          <Button variant="outline" size="icon" onClick={openAddPreviewDialog}>
+              <Plus />
+              <span className="sr-only">Add Preview</span>
+          </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+          <p>Add Preview</p>
+          </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+          <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={handlePreviewLocal}>
+                  <Laptop />
+                  <span className="sr-only">Preview Local App</span>
+              </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+             <p>Preview Local App</p>
+          </TooltipContent>
+      </Tooltip>
+      {isSharedSession ? (
+          <Tooltip>
+              <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={() => copyToClipboard(window.location.href, 'URL')}>
+                  <ClipboardCopy />
+                  <span className="sr-only">Copy Session URL</span>
+              </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+              <p>Copy Session URL</p>
+              </TooltipContent>
+          </Tooltip>
+          ) : (
+          onShare && <Tooltip>
+              <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={onShare}>
+                  <Share2 />
+                  <span className="sr-only">Share Session</span>
+              </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+              <p>Share Session</p>
+              </TooltipContent>
+          </Tooltip>
+          )}
+      <Tooltip>
+          <TooltipTrigger asChild>
+          <Button variant="outline" size="icon" onClick={openAiAssistant}>
+              <Sparkles />
+              <span className="sr-only">AI Assistant</span>
+          </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+          <p>AI Assistant</p>
+          </TooltipContent>
+      </Tooltip>
+      </TooltipProvider>
+    </div>
+  );
+
+  const MobileControls = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Menu />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={openAiAssistant}>
+          <Sparkles className="mr-2" /> AI Assistant
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Layout</DropdownMenuLabel>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <LayoutGrid className="mr-2" />
+                Change Layout
+              </DropdownMenuItem>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuRadioGroup value={layout} onValueChange={setLayout}>
+                {layouts.map((l) => (
+                  <DropdownMenuRadioItem key={l.value} value={l.value}>
+                    <l.icon className="w-4 h-4 mr-2" />
+                    <span>{l.label}</span>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Palette className="mr-2" />
+                Theme
+              </DropdownMenuItem>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+                {themes.map((t) => (
+                  <DropdownMenuRadioItem key={t.value} value={t.value}>
+                    {t.name}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Paintbrush className="mr-2" />
+                Wallpaper
+              </DropdownMenuItem>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuRadioGroup value={background} onValueChange={setBackground}>
+                {wallpapers.map((w) => (
+                  <DropdownMenuRadioItem key={w.value} value={w.value}>
+                    {w.name}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setRulersVisible(!rulersVisible)}>
+          <Ruler className="mr-2" />
+          {rulersVisible ? 'Hide Rulers' : 'Show Rulers'}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSyncPreviews} disabled={!lastInteractedUrl}>
+          <RefreshCw className="mr-2" />
+          Sync Previews
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={openAddPreviewDialog}>
+          <Plus className="mr-2" />
+          Add Preview
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handlePreviewLocal}>
+          <Laptop className="mr-2" />
+          Preview Local App
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        {isSharedSession ? (
+          <DropdownMenuItem onClick={() => copyToClipboard(window.location.href, 'URL')}>
+            <ClipboardCopy className="mr-2" />
+            Copy Session URL
+          </DropdownMenuItem>
+        ) : (
+          onShare && (
+            <DropdownMenuItem onClick={onShare}>
+              <Share2 className="mr-2" />
+              Share Session
+            </DropdownMenuItem>
+          )
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
   
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
@@ -1040,197 +1333,27 @@ export function PreviewWorkspace({
             </Dialog>
             
             {/* HEADER */}
-            <header className="flex items-center justify-between p-2 border-b shrink-0 gap-4">
-                <div className="flex items-center shrink-0">
+            <header className="flex-col md:flex-row flex items-center justify-between p-2 border-b shrink-0 gap-2 md:gap-4">
+                <div className="flex items-center justify-between w-full md:w-auto">
                     <Logo />
+                    <div className="md:hidden">
+                        <MobileControls />
+                    </div>
                 </div>
-                <form className="flex-1 max-w-xl" onSubmit={handleUrlSubmit}>
+                <form className="w-full md:flex-1 md:max-w-xl" onSubmit={handleUrlSubmit}>
                     <div className="relative">
                         <Input 
                             type="text" 
                             value={currentUrl}
                             onChange={(e) => setCurrentUrl(e.target.value)}
-                            placeholder="Enter a URL to preview (e.g., reactnative.dev)"
-                            className="pr-24"
+                            placeholder="Enter a URL to preview"
+                            className="pr-24 text-base md:text-sm"
                         />
                         <Button type="submit" className="absolute top-1/2 right-1 h-full -translate-y-1/2">Preview</Button>
                     </div>
                 </form>
-                <div className="flex items-center shrink-0 gap-2">
-                    <TooltipProvider delayDuration={100}>
-                    <DropdownMenu>
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="icon">
-                                    <LayoutGrid />
-                                    <span className="sr-only">Change Layout</span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Change Layout</p>
-                        </TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>Panel Layout</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuRadioGroup value={layout} onValueChange={setLayout}>
-                                {layouts.map((l) => (
-                                    <DropdownMenuRadioItem key={l.value} value={l.value}>
-                                        <l.icon className="w-4 h-4 mr-2" />
-                                        <span>{l.label}</span>
-                                    </DropdownMenuRadioItem>
-                                ))}
-                            </DropdownMenuRadioGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <DropdownMenu>
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon">
-                                <Palette />
-                                <span className="sr-only">Theme</span>
-                            </Button>
-                            </DropdownMenuTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Theme</p>
-                        </TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>Select a Theme</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-                                {themes.map((t) => (
-                                    <DropdownMenuRadioItem key={t.value} value={t.value}>
-                                        {t.name}
-                                    </DropdownMenuRadioItem>
-                                ))}
-                            </DropdownMenuRadioGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <DropdownMenu>
-                        <Tooltip>
-                        <TooltipTrigger asChild>
-                            <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon">
-                                <Paintbrush />
-                                <span className="sr-only">Wallpaper</span>
-                            </Button>
-                            </DropdownMenuTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Wallpaper</p>
-                        </TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>Select a background</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuRadioGroup value={background} onValueChange={setBackground}>
-                            {wallpapers.map(w => (
-                            <DropdownMenuRadioItem key={w.value} value={w.value}>{w.name}</DropdownMenuRadioItem>
-                            ))}
-                        </DropdownMenuRadioGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <Separator orientation="vertical" className="h-6 mx-1" />
-                    
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant={rulersVisible ? 'secondary' : 'outline'} size="icon" onClick={() => setRulersVisible(!rulersVisible)}>
-                                <Ruler />
-                                <span className="sr-only">Toggle Rulers</span>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Toggle Rulers</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="outline" size="icon" onClick={handleSyncPreviews} disabled={!lastInteractedUrl}>
-                                <RefreshCw />
-                                <span className="sr-only">Sync Previews</span>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Sync Previews</p>
-                        </TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon" onClick={openAddPreviewDialog}>
-                            <Plus />
-                            <span className="sr-only">Add Preview</span>
-                        </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                        <p>Add Preview</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="outline" size="icon" onClick={handlePreviewLocal}>
-                                <Laptop />
-                                <span className="sr-only">Preview Local App</span>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           <p>Preview Local App</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    {isSharedSession ? (
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                            <Button variant="outline" size="icon" onClick={() => copyToClipboard(window.location.href, 'URL')}>
-                                <ClipboardCopy />
-                                <span className="sr-only">Copy Session URL</span>
-                            </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                            <p>Copy Session URL</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        ) : (
-                        onShare && <Tooltip>
-                            <TooltipTrigger asChild>
-                            <Button variant="outline" size="icon" onClick={onShare}>
-                                <Share2 />
-                                <span className="sr-only">Share Session</span>
-                            </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                            <p>Share Session</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        )}
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon" onClick={() => {
-                            setGenerateResponse(null);
-                            setRefactorResponse(null);
-                            setError(null);
-                            setPrompt('');
-                            setRefactorCodeInput('');
-                            setRefactorInstructions('');
-                            setIsGeneratorOpen(true)
-                        }}>
-                            <Sparkles />
-                            <span className="sr-only">AI Assistant</span>
-                        </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                        <p>AI Assistant</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    </TooltipProvider>
+                <div className="hidden md:flex">
+                  <DesktopControls />
                 </div>
             </header>
             
