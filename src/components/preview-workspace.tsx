@@ -675,7 +675,7 @@ export function PreviewWorkspace({
     if (isMobile) {
       return (
         <Carousel setApi={setCarouselApi} className="w-full h-full">
-          <CarouselContent>
+          <CarouselContent className="h-full">
             {previews.map((p) => (
               <CarouselItem key={p.id} className="flex items-center justify-center p-2">
                 <PreviewPanel
@@ -1011,7 +1011,7 @@ export function PreviewWorkspace({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel>Display Options</DropdownMenuLabel>
-          {!isMobile && (
+          {isMobile ? null : (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -1468,4 +1468,3 @@ export function PreviewWorkspace({
     </DndContext>
   );
 }
-
