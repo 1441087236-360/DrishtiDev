@@ -41,6 +41,7 @@ import { refactorCode } from '@/ai/flows/refactor-code';
 import type { RefactorCodeOutput } from '@/ai/flows/refactor-code';
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, closestCenter, DragEndEvent, DragStartEvent, DragOverlay } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
 import { Logo } from '@/components/logo';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -301,6 +302,8 @@ export function PreviewWorkspace({
   const [isResizing, setIsResizing] = useState(false);
   
   const isMobile = useIsMobile();
+  const [carouselApi, setCarouselApi] = React.useState<CarouselApi>()
+  const [currentSlide, setCurrentSlide] = React.useState(0)
 
 
   useEffect(() => {
@@ -343,6 +346,18 @@ export function PreviewWorkspace({
         }
     }
   }, [theme]);
+  
+  useEffect(() => {
+    if (!carouselApi) {
+      return
+    }
+ 
+    setCurrentSlide(carouselApi.selectedScrollSnap())
+ 
+    carouselApi.on("select", () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap())
+    })
+  }, [carouselApi])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -528,7 +543,7 @@ export function PreviewWorkspace({
   };
 
   const openAddPreviewDialog = () => {
-    if (previews.length >= 4 && layout === 'grid') {
+    if (!isMobile && previews.length >= 4 && layout === 'grid') {
       toast({
         variant: 'destructive',
         title: 'Layout Full',
@@ -654,6 +669,43 @@ export function PreviewWorkspace({
             <Plus className="mr-2" /> Add a Preview to Get Started
           </Button>
         </div>
+      );
+    }
+
+    const renderPreviewItem = (p: any) => (
+      <div className="w-full h-full p-2">
+        <PreviewPanel
+          key={p.id}
+          preview={p}
+          onRemove={handleRemove}
+          onToggleDevTools={handleToggleDevTools}
+          onRefresh={handleRefresh}
+          onAudit={handleAudit}
+          onMaximize={setMaximizedId}
+          onMinimize={() => setMaximizedId(null)}
+          isMaximized={p.id === maximizedId}
+          isResizing={isResizing}
+          isWallpaperActive={isWallpaperActive}
+          handleProps={null}
+          isDragging={false}
+          isOverlay={false}
+        />
+      </div>
+    );
+  
+    if (isMobile) {
+      return (
+        <Carousel setApi={setCarouselApi} className="w-full h-full">
+          <CarouselContent>
+            {previews.map((p) => (
+              <CarouselItem key={p.id}>
+                {renderPreviewItem(p)}
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       );
     }
 
@@ -1359,14 +1411,14 @@ export function PreviewWorkspace({
             
             {/* MAIN CONTENT */}
              <main className="relative flex-1 min-h-0 transition-all duration-500 bg-center bg-cover" style={selectedWallpaperStyle}>
-                {rulersVisible && (
+                {rulersVisible && !isMobile && (
                     <>
                         <div className="absolute top-0 left-6 h-6 w-full bg-card border-b border-l border-border z-10" style={{ backgroundSize: '100px 100%', backgroundImage: 'linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)' }}/>
                         <div className="absolute top-6 left-0 w-6 h-full bg-card border-r border-t border-border z-10" style={{ backgroundSize: '100% 100px', backgroundImage: 'linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)' }}/>
                         <div className="absolute top-0 left-0 w-6 h-6 border-b border-r bg-card z-10"/>
                     </>
                 )}
-                <div className={cn("w-full h-full", rulersVisible && "p-6 pt-0")}>
+                <div className={cn("w-full h-full", rulersVisible && !isMobile && "p-6 pt-0")}>
                    {maximizedId && maximizedPreview ? (
                      <div className="w-full h-full p-2">
                         <PreviewPanel
@@ -1410,9 +1462,14 @@ export function PreviewWorkspace({
                 </DragOverlay>
             </main>
             <footer className="p-2 text-center text-xs text-muted-foreground border-t">
-                © {new Date().getFullYear()} DrishtiDev. All Rights Reserved.
+                {isMobile && previews.length > 0 ? (
+                  <div className="py-2 text-center text-sm text-muted-foreground">
+                    Slide {currentSlide + 1} of {previews.length}
+                  </div>
+                ) : `© ${new Date().getFullYear()} DrishtiDev. All Rights Reserved.`}
             </footer>
         </div>
     </DndContext>
   );
 }
+
