@@ -678,24 +678,26 @@ export function PreviewWorkspace({
         <Carousel setApi={setCarouselApi} className="w-full h-full">
           <CarouselContent className="h-full">
             {previews.map((p) => (
-              <CarouselItem key={p.id} className="w-full h-full">
-                <PreviewPanel
-                    key={p.id}
-                    preview={p}
-                    onRemove={handleRemove}
-                    onToggleDevTools={handleToggleDevTools}
-                    onRefresh={handleRefresh}
-                    onAudit={handleAudit}
-                    onMaximize={setMaximizedId}
-                    onMinimize={() => setMaximizedId(null)}
-                    isMaximized={p.id === maximizedId}
-                    isResizing={isResizing}
-                    isWallpaperActive={isWallpaperActive}
-                    handleProps={null}
-                    isDragging={false}
-                    isOverlay={false}
-                    isMobile={true}
-                />
+              <CarouselItem key={p.id} className="h-full">
+                <div className="w-full h-full p-2">
+                    <PreviewPanel
+                        key={p.id}
+                        preview={p}
+                        onRemove={handleRemove}
+                        onToggleDevTools={handleToggleDevTools}
+                        onRefresh={handleRefresh}
+                        onAudit={handleAudit}
+                        onMaximize={setMaximizedId}
+                        onMinimize={() => setMaximizedId(null)}
+                        isMaximized={p.id === maximizedId}
+                        isResizing={isResizing}
+                        isWallpaperActive={isWallpaperActive}
+                        handleProps={null}
+                        isDragging={false}
+                        isOverlay={false}
+                        isMobile={true}
+                    />
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -1107,7 +1109,7 @@ export function PreviewWorkspace({
   
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex flex-col h-screen overflow-hidden text-foreground bg-background font-body">
+        <div className="flex flex-col h-screen text-foreground bg-background font-body md:overflow-hidden">
             
             {/* DIALOGS */}
             <Dialog open={isAddPreviewDialogOpen} onOpenChange={setAddPreviewDialogOpen}>
@@ -1470,5 +1472,3 @@ export function PreviewWorkspace({
     </DndContext>
   );
 }
-
-    
