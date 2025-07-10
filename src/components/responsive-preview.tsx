@@ -12,9 +12,10 @@ interface ResponsivePreviewProps {
   title: string;
   isDevToolsOpen: boolean;
   isWallpaperActive: boolean;
+  isMobile?: boolean;
 }
 
-export function ResponsivePreview({ id, url, width, height, title, isDevToolsOpen, isWallpaperActive }: ResponsivePreviewProps) {
+export function ResponsivePreview({ id, url, width, height, title, isDevToolsOpen, isWallpaperActive, isMobile = false }: ResponsivePreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
 
@@ -51,7 +52,7 @@ export function ResponsivePreview({ id, url, width, height, title, isDevToolsOpe
     return () => {
       observer.disconnect();
     };
-  }, [frameWidth, frameHeight]);
+  }, [frameWidth, frameHeight, isMobile]);
   
   const useProxy = isDevToolsOpen && !url.includes('localhost');
   const previewUrl = useProxy ? `/api/proxy?url=${encodeURIComponent(url)}&previewId=${id}` : url;

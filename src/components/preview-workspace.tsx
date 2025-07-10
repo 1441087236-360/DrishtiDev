@@ -107,7 +107,7 @@ function PreviewPanel({ preview, onRemove, onToggleDevTools, onRefresh, onAudit,
   const showDragPlaceholder = isDragging || isOverlay;
   
   return (
-    <div className={cn("h-full w-full", isOverlay && "p-2", isMobile && "p-2")}>
+    <div className={cn("h-full w-full", (isOverlay || isMobile) && "p-2")}>
       <div className={cn(
         "flex flex-col h-full rounded-lg overflow-hidden shadow-lg transition-all duration-300",
         isWallpaperActive ? 'bg-black/20 backdrop-blur-lg border border-white/10' : 'bg-background border border-border',
@@ -219,6 +219,7 @@ function PreviewPanel({ preview, onRemove, onToggleDevTools, onRefresh, onAudit,
                 title={preview.title}
                 isDevToolsOpen={preview.isDevToolsOpen}
                 isWallpaperActive={isWallpaperActive}
+                isMobile={isMobile}
               />
               {isResizing && (
                 <div className="absolute inset-0 z-10" />
