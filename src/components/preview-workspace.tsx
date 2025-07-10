@@ -672,24 +672,26 @@ export function PreviewWorkspace({
       );
     }
 
-    const renderPreviewItem = (p: any) => (
-      <div className="w-full h-full p-2">
-        <PreviewPanel
-          key={p.id}
-          preview={p}
-          onRemove={handleRemove}
-          onToggleDevTools={handleToggleDevTools}
-          onRefresh={handleRefresh}
-          onAudit={handleAudit}
-          onMaximize={setMaximizedId}
-          onMinimize={() => setMaximizedId(null)}
-          isMaximized={p.id === maximizedId}
-          isResizing={isResizing}
-          isWallpaperActive={isWallpaperActive}
-          handleProps={null}
-          isDragging={false}
-          isOverlay={false}
-        />
+    const renderPreviewItem = (p: any, isCarouselItem = false) => (
+      <div className={cn("w-full h-full", isCarouselItem ? "flex items-center justify-center" : "p-2")}>
+        <div className={cn(isCarouselItem && "w-full h-full p-2")}>
+            <PreviewPanel
+                key={p.id}
+                preview={p}
+                onRemove={handleRemove}
+                onToggleDevTools={handleToggleDevTools}
+                onRefresh={handleRefresh}
+                onAudit={handleAudit}
+                onMaximize={setMaximizedId}
+                onMinimize={() => setMaximizedId(null)}
+                isMaximized={p.id === maximizedId}
+                isResizing={isResizing}
+                isWallpaperActive={isWallpaperActive}
+                handleProps={null}
+                isDragging={false}
+                isOverlay={false}
+            />
+        </div>
       </div>
     );
   
@@ -699,7 +701,7 @@ export function PreviewWorkspace({
           <CarouselContent>
             {previews.map((p) => (
               <CarouselItem key={p.id}>
-                {renderPreviewItem(p)}
+                {renderPreviewItem(p, true)}
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -1016,25 +1018,27 @@ export function PreviewWorkspace({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Layout</DropdownMenuLabel>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <LayoutGrid className="mr-2" />
-                Change Layout
-              </DropdownMenuItem>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuRadioGroup value={layout} onValueChange={setLayout}>
-                {layouts.map((l) => (
-                  <DropdownMenuRadioItem key={l.value} value={l.value}>
-                    <l.icon className="w-4 h-4 mr-2" />
-                    <span>{l.label}</span>
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DropdownMenuLabel>Display Options</DropdownMenuLabel>
+          {!isMobile && (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <LayoutGrid className="mr-2" />
+                    Change Layout
+                </DropdownMenuItem>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                <DropdownMenuRadioGroup value={layout} onValueChange={setLayout}>
+                    {layouts.map((l) => (
+                    <DropdownMenuRadioItem key={l.value} value={l.value}>
+                        <l.icon className="w-4 h-4 mr-2" />
+                        <span>{l.label}</span>
+                    </DropdownMenuRadioItem>
+                    ))}
+                </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
